@@ -13,6 +13,7 @@ def size(tree_obj):
 
 def decision_tree(train_x, train_y, test_x, test_y):
     file = open("dt_results.csv", "w")
+    file.write("Analysis Stated on "+datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     file.write("Depth, Iteration, Instances, Train Time, Test Time, # Nodes, Training Accuracy, Testing Accuracy")
     logging.info("Starting Decision Tree Analysis")
     outer_time = datetime.datetime.now()
@@ -38,8 +39,9 @@ def decision_tree(train_x, train_y, test_x, test_y):
     file.close()
 
 def support_vector_machine(train_x, train_y, test_x, test_y, kern, iterations):
-    name = "svm_"+kern+"_results.csv"
+    name = "Results/svm_"+kern+"_results.csv"
     file = open(name, "w")
+    file.write("Analysis Stated on "+datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     file.write("Iteration, Instances, Train Time, Test Time, Training Accuracy, Testing Accuracy")
 
     logging.info("Starting Support Vector Machine Analysis")
@@ -63,7 +65,7 @@ def support_vector_machine(train_x, train_y, test_x, test_y, kern, iterations):
 
 def main():
 
-    logname = "log"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +".txt"
+    logname = "log/log_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +".txt"
     logging.basicConfig(filename=logname, level=logging.DEBUG)
     # create the training & test sets, skipping the header row with [2:]
     train_x = pd.read_csv(open('Data/train_x.csv', 'r'), delimiter=',').as_matrix()[:, :]
@@ -72,8 +74,7 @@ def main():
     test_x = pd.read_csv(open('Data/XY_test_17.csv', 'r'), skiprows=2, dtype='f', delimiter=',').as_matrix()[:, 1:]
     test_y = pd.read_csv(open('Data/XY_test_17.csv', 'r'), skiprows=2, dtype='f', delimiter=',').as_matrix()[:,0]
 
-    support_vector_machine(train_x, train_y, test_x, test_y, 'linear', 1000)
-    support_vector_machine(train_x, train_y, test_x, test_y, 'sigmoid', 1000)
+    support_vector_machine(train_x, train_y, test_x, test_y, 'rbf', 1000)
 
 if __name__=="__main__":
     main()
