@@ -5,6 +5,8 @@ from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sknn import mlp
+import numpy as np
+
 
 from sklearn import metrics
 
@@ -52,7 +54,7 @@ def boosting(train_x, train_y, test_x, test_y, n_estimators, iterations):
 
     logging.info("Starting Boosting Analysis")
     outer_time = datetime.datetime.now()
-    boost = AdaBoostClassifier(tree.DecisionTreeClassifier(max_depth=4), n_estimators=n_estimators)
+    boost = AdaBoostClassifier(tree.DecisionTreeClassifier(max_depth=19), n_estimators=n_estimators)
     for i in range(iterations):
         sample_size = int(random.uniform(0.001, 1.0)*train_y.shape[0])
         index = random.sample(xrange(0, train_y.shape[0]), sample_size)
@@ -69,17 +71,17 @@ def boosting(train_x, train_y, test_x, test_y, n_estimators, iterations):
     logging.info("Analysis completed in %s" % (datetime.datetime.now() - outer_time))
     file.close()
 
-def decision_tree(train_x, train_y, test_x, test_y):
-    file = open("dt_results.csv", "w")
+def decision_tree(train_x, train_y, test_x, test_y, iterations):
+    file = open("Results/dt_results.csv", "w")
     file.write("Analysis Stated on "+datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
     file.write("Depth, Iteration, Instances, Train Time, Test Time, # Nodes, Training Accuracy, Testing Accuracy")
     logging.info("Starting Decision Tree Analysis")
     outer_time = datetime.datetime.now()
-    for depth in range(2, 20, 1):
-        print "Starting Depth %d" % depth
+    for depth in range(10, 20, 1):
+        # logging.info("Starting Depth %d" % depth)
         inner_time = datetime.datetime.now()
         dt = tree.DecisionTreeClassifier(max_depth=depth)
-        for i in range(NUM_ITERATIONS):
+        for i in range(iterations):
             sample_size = int(random.uniform(0.001, 1.0)*train_y.shape[0])
             index = random.sample(xrange(0, train_y.shape[0]), sample_size)
             start = datetime.datetime.now()
@@ -148,29 +150,42 @@ def support_vector_machine(train_x, train_y, test_x, test_y, kern, iterations):
 
 def main():
 
-    logname = "log/log_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +".txt"
+    logname = "log/log_subject_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +".txt"
     logging.basicConfig(filename=logname, level=logging.DEBUG)
     # create the training & test sets, skipping the header row with [2:]
-    train_x = pd.read_csv(open('Data/train_x.csv', 'r'), delimiter=',').as_matrix()[:, :]
-    train_y = pd.read_csv(open('Data/train_y.csv','r')).as_matrix()[:]
+    x = pd.read_csv(open('Data/train_x_subject.csv', 'r'), delimiter=',').as_matrix()[:, :]
+    y = pd.read_csv(open('Data/train_y_subject.csv','r')).as_matrix()[:]
 
-    test_x = pd.read_csv(open('Data/XY_test_17.csv', 'r'), skiprows=2, dtype='f', delimiter=',').as_matrix()[:, 1:]
-    test_y = pd.read_csv(open('Data/XY_test_17.csv', 'r'), skiprows=2, dtype='f', delimiter=',').as_matrix()[:,0]
+    indices = np.random.permutation(y.shape[0])
 
-    # support_vector_machine(train_x, train_y, test_x, test_y, 'rbf', 1000)
-    # k_nn(train_x, train_y, test_x, test_y, 2, 100)
-    # k_nn(train_x, train_y, test_x, test_y, 3, 100)
-    # k_nn(train_x, train_y, test_x, test_y, 5, 100)
+    train_idx, test_idx = indices[:9000], indices[9000:]
+    train_x = x[train_idx,:]
+    train_y = y[train_idx,:]
+    test_x = x[test_idx, :]
+    test_y = y[test_idx,:]
     #
-    # boosting(train_x, train_y, test_x, test_y, 50, 100)
-    # boosting(train_x, train_y, test_x, test_y, 100, 100)
-    # boosting(train_x, train_y, test_x, test_y, 150, 100)
-    neural(train_x, train_y, test_x, test_y, 5, 100)
-    neural(train_x, train_y, test_x, test_y, 6, 100)
-    neural(train_x, train_y, test_x, test_y, 7, 100)
-    neural(train_x, train_y, test_x, test_y, 8, 100)
 
+    start_analysis = datetime.datetime.now()
+    # support_vector_machine(train_x, train_y, test_x, test_y, 'linear', 1000)
+    # support_vector_machine(train_x, train_y, test_x, test_y, 'rbf', 1000)
+    #
+    #
+    # decision_tree(train_x, train_y, test_x, test_y, 1000)
+    #
+    # k_nn(train_x, train_y, test_x, test_y, 2, 1000)
+    # k_nn(train_x, train_y, test_x, test_y, 3, 1000)
+    # k_nn(train_x, train_y, test_x, test_y, 5, 1000)
+    #
+    boosting(train_x, train_y, test_x, test_y, 50, 100)
+    boosting(train_x, train_y, test_x, test_y, 100, 100)
+    boosting(train_x, train_y, test_x, test_y, 150, 100)
+    #
+    # neural(train_x, train_y, test_x, test_y, 2, 100)
+    # neural(train_x, train_y, test_x, test_y, 3, 100)
+    # neural(train_x, train_y, test_x, test_y, 4, 100)
+    # neural(train_x, train_y, test_x, test_y, 5, 100)
 
+    print "analysis complete total time %s" % (datetime.datetime.now() - start_analysis)
 
 if __name__=="__main__":
     main()
