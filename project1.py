@@ -164,22 +164,22 @@ def main():
     test_x = x[test_idx, :]
     test_y = y[test_idx,:]
     #
-
-    start_analysis = datetime.datetime.now()
-    # support_vector_machine(train_x, train_y, test_x, test_y, 'linear', 1000)
-    # support_vector_machine(train_x, train_y, test_x, test_y, 'rbf', 1000)
     #
-    #
-    # decision_tree(train_x, train_y, test_x, test_y, 1000)
-    #
-    # k_nn(train_x, train_y, test_x, test_y, 2, 1000)
-    # k_nn(train_x, train_y, test_x, test_y, 3, 1000)
-    # k_nn(train_x, train_y, test_x, test_y, 5, 1000)
-    #
-    boosting(train_x, train_y, test_x, test_y, 50, 100)
-    boosting(train_x, train_y, test_x, test_y, 100, 100)
-    boosting(train_x, train_y, test_x, test_y, 150, 100)
-    #
+    # start_analysis = datetime.datetime.now()
+    # # support_vector_machine(train_x, train_y, test_x, test_y, 'linear', 1000)
+    # # support_vector_machine(train_x, train_y, test_x, test_y, 'rbf', 1000)
+    # #
+    # #
+    # # decision_tree(train_x, train_y, test_x, test_y, 1000)
+    # #
+    # # k_nn(train_x, train_y, test_x, test_y, 2, 1000)
+    # # k_nn(train_x, train_y, test_x, test_y, 3, 1000)
+    # # k_nn(train_x, train_y, test_x, test_y, 5, 1000)
+    # #
+    # boosting(train_x, train_y, test_x, test_y, 50, 100)
+    # boosting(train_x, train_y, test_x, test_y, 100, 100)
+    # boosting(train_x, train_y, test_x, test_y, 150, 100)
+    # #
     # neural(train_x, train_y, test_x, test_y, 2, 100)
     # neural(train_x, train_y, test_x, test_y, 3, 100)
     # neural(train_x, train_y, test_x, test_y, 4, 100)
