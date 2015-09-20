@@ -27,10 +27,11 @@ def neural(train_x, train_y, test_x, test_y, n_epochs, iterations):
 
     logging.info("Starting Neural Analysis")
     outer_time = datetime.datetime.now()
-    nn = mlp.Classifier(layers=[
-       # mlp.Layer("Maxout", units=100, pieces=2),
-        mlp.Layer("Softmax")], n_iter=n_epochs)
+
     for i in range(iterations):
+        nn = mlp.Classifier(layers=[
+            mlp.Layer("Maxout", units=20, pieces=2),
+            mlp.Layer("Softmax")], n_iter=n_epochs)
         sample_size = int(random.uniform(0.001, 1.0)*train_y.shape[0])
         index = random.sample(xrange(0, train_y.shape[0]), sample_size)
         start = datetime.datetime.now()
@@ -152,20 +153,24 @@ def main():
 
     logname = "log/log_subject_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S") +".txt"
     logging.basicConfig(filename=logname, level=logging.DEBUG)
-    # create the training & test sets, skipping the header row with [2:]
-    x = pd.read_csv(open('Data/train_x_subject.csv', 'r'), delimiter=',').as_matrix()[:, :]
-    y = pd.read_csv(open('Data/train_y_subject.csv','r')).as_matrix()[:]
+    # create the training & test sets
 
-    indices = np.random.permutation(y.shape[0])
+    train_x = pd.read_csv(open('Data/train_x.csv', 'r'), delimiter=',').as_matrix()[:, :]
+    train_y = pd.read_csv(open('Data/train_y_activity.csv','r')).as_matrix()[:]
+    test_x = pd.read_csv(open('Data/XY_test_17_activity.csv','r'), skiprows=2).as_matrix()[:,1:]
+    test_y = pd.read_csv(open('Data/XY_test_17_activity.csv','r'), skiprows=2).as_matrix()[:,0]
 
-    train_idx, test_idx = indices[:9000], indices[9000:]
-    train_x = x[train_idx,:]
-    train_y = y[train_idx,:]
-    test_x = x[test_idx, :]
-    test_y = y[test_idx,:]
+
+    # indices = np.random.permutation(y.shape[0])
+    #
+    # train_idx, test_idx = indices[:9000], indices[9000:]
+    # train_x = x[train_idx,:]
+    # train_y = y[train_idx,:]
+    # test_x = x[test_idx, :]
+    # test_y = y[test_idx,:]
     #
     #
-    # start_analysis = datetime.datetime.now()
+    start_analysis = datetime.datetime.now()
     # # support_vector_machine(train_x, train_y, test_x, test_y, 'linear', 1000)
     # # support_vector_machine(train_x, train_y, test_x, test_y, 'rbf', 1000)
     # #
